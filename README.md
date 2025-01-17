@@ -5,11 +5,11 @@ _Sébastien Mériot_ ([@smeriot](https://twitter.com/smeriot))
 Déroulement
 ===========
 
-Il est prévu de réaliser 2 TPs ensemble pour s'approprier Linux et un hyperviseur. Le choix de ce dernier s'est porté sur [Proxmox](https://www.proxmox.com/) étant donné que le rachat de VMware par Broadcam rend l'utilisation de ESXi [contraignante](https://www.lemondeinformatique.fr/actualites/lire-broadcom-liquide-la-version-gratuite-de-l-hyperviseur-vmware-esxi-92949.html).
+Il est prévu de réaliser 2 TPs ensemble pour s'approprier Linux, quelques protocoles L7 et un hyperviseur. Le choix de ce dernier s'est porté sur [KVM](https://fr.wikipedia.org/wiki/Kernel-based_Virtual_Machine) au travers de [Proxmox](https://www.proxmox.com/) étant donné que le rachat de VMware par Broadcam rend l'utilisation de ESXi [contraignante](https://www.lemondeinformatique.fr/actualites/lire-broadcom-liquide-la-version-gratuite-de-l-hyperviseur-vmware-esxi-92949.html).
 
 Un projet viendra mettre en oeuvre les différentes compétences réseau acquises ainsi qu'en découvrir de nouvelles par la pratique. 
 
-Ces TPs seront à réaliser en groupe.
+Ces TPs seront à réaliser en groupe de 6.
 
 Licence
 =======
