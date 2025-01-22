@@ -418,3 +418,10 @@ Par défaut, la fonctionnalité de transférer des paquets d'un réseau à un au
 Editez le fichier `/etc/sysctl.conf` et recherchez la ligne `#net.ipv4.ip_forward=1` afin de la décommenter. Sauvegardez le fichier puis recharger la configuration à l'aide de la commande `sysctl -p`.
 
 21. Relancez le `tcpdump` sur la _gateway_ et retentez à présent de faire un ping depuis une VM vers une VM d'un autre _bridge_. Que constatez-vous ?
+
+Nettoyage
+=========
+
+Pour terminer ce TP:
+- supprimez les machines virtuelles créées
+- supprimez les _bridges_ créés
