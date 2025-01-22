@@ -1,6 +1,6 @@
 # TP1 - Virtualisation : Proxmox, Linux & Networking
 
-_Sébastien Mériot_ ([@smeriot](https://twitter.com/smeriot))
+_Sébastien Mériot_ ([@smeriot](https://bsky.app/profile/smeriot.bsky.social))
 
 Durée: 3 heures
 
