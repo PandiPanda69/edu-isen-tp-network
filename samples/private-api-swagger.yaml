@@ -1,0 +1,248 @@
+openapi: 3.0.3
+info:
+  title: MyLittleBank - Private API
+  description: |-
+    Ce _swagger_ permet de définir le format attendu des endpoints de l'API privée du projet, c'est-à-dire les endpoints qui ne seront exposés qu'aux autres entités bancaires afin de faire des transactions. Vous pouvez avoir davantage de endpoints si vous souhaitez pouvoir faire du debug. Néanmoins, ceux-ci constituent la base indispensable pour la bonne évaluation de votre projet.
+  version: 1.0.0
+servers:
+  - url: http://yourserver/
+paths:
+  /account/{account}/exists:
+    get:
+      tags:
+        - account
+      summary: Vérifier qu'un compte existe
+      description: Vérifier qu'un compte existe
+      operationId: accountExists
+      parameters:
+        - name: account
+          in: path
+          description: Identifiant du compte
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 708273
+      responses:
+        '200':
+          description: Le compte existe.
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Paramètres invalides
+        '404':
+          description: Le comtpe n'existe pas.
+ 
+  /currency/{currency}/allowed:
+    get:
+      tags:
+        - currency
+      summary: Est-ce que la devise est acceptée ?
+      description: Est-ce que la devise est acceptée ?
+      operationId: currencyAllowed
+      parameters:
+        - name: currency
+          in: path
+          description: Code de la devise
+          required: true
+          schema:
+            type: string
+            format: string
+            example: "EUR"
+      responses:
+        '200':
+          description: La devise est acceptée.
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Paramètres invalides.
+        '404':
+          description: La devise n'est pas acceptées.
+        '501':
+          description: Dans le cas où les devises n'ont pas été implémentées.
+  /currency/{currency}/rate:
+    post:
+      tags:
+       - currency
+      summary: Fixe un taux  de conversion pour une devise
+      description: Fixe un taux de conversion pour la devise par rapport à une autre. Permet d'indiquer que la devise courante vaut X devises apportées par la requête.
+      operationId: currencyRate
+      parameters:
+        - name: currency
+          in: path
+          description: Code de la devise
+          required: true
+          schema:
+            type: string
+            format: string
+            example: "EUR"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rate:
+                  type: number
+                  format: float
+                  example: 0.8973
+                currency:
+                  type: string
+                  format: string
+                  example: "GBP"
+      responses:
+        '200':
+          description: Le taux a été pris en compte.
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Paramètres invalides.
+        '501':
+          description: Dans le cas où les devises n'ont pas été implémentées.
+
+  /transaction/card:
+    post:
+      tags:
+       - transaction
+      summary: Permet de soumettre une transaction par carte
+      description: Permet de soumettre une transaction par carte
+      operationId: txCard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sourceAccount:
+                  type: integer
+                  format: int64
+                  example: 637299
+                destAccount:
+                  type: integer
+                  format: int64
+                  example: 829330
+                currency:
+                  type: string
+                  format: string
+                  example: "USD"
+                amount:
+                  type: number
+                  format: float
+                  example: 51.50
+                merchant:
+                  type: string
+                  format: string
+                  example: "BOULANG ELISE"
+      responses:
+        '200':
+          description: La transaction a été enregistrée.
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Paramètres invalides.
+        '401':
+          description: La transaction est rejetée du fait d'un solde insuffisant.
+        '404':
+          description: Compte inconnu
+        '406':
+          description: La devise n'est pas supportée.
+
+  /transaction/check:
+    post:
+      tags:
+       - transaction
+      summary: Permet de soumettre l'encaissement d'un chèque
+      description: Permet de soumettre l'encaissement d'un chèque
+      operationId: txCheck
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sourceAccount:
+                  type: integer
+                  format: int64
+                  example: 637299
+                destAccount:
+                  type: integer
+                  format: int64
+                  example: 829330
+                currency:
+                  type: string
+                  format: string
+                  example: "USD"
+                amount:
+                  type: number
+                  format: float
+                  example: 51.50
+      responses:
+        '200':
+          description: La transaction a été enregistrée.
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Paramètres invalides.
+        '404':
+          description: Compte inconnu
+        '406':
+          description: La devise n'est pas supportée.
+
+  /transaction/transfer:
+    post:
+      tags:
+       - transaction
+      summary: Permet de soumettre un virement immédiat
+      description: Permet de soumettre un virement immédiat
+      operationId: txTransfer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sourceAccount:
+                  type: integer
+                  format: int64
+                  example: 637299
+                destAccount:
+                  type: integer
+                  format: int64
+                  example: 829330
+                currency:
+                  type: string
+                  format: string
+                  example: "USD"
+                amount:
+                  type: number
+                  format: float
+                  example: 51.50
+                label:
+                  type: string
+                  format: string
+                  example: "Virement Papa"
+      responses:
+        '200':
+          description: La transaction a été enregistrée.
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          description: Paramètres invalides.
+        '401':
+          description: La transaction est rejetée du fait d'un solde insuffisant.
+        '404':
+          description: Compte inconnu
+        '406':
+          description: La devise n'est pas supportée.

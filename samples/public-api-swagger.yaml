@@ -1,0 +1,185 @@
+openapi: 3.0.3
+info:
+  title: MyLittleBank - Public API
+  description: |-
+    Ce _swagger_ permet de définir le format attendu des endpoints de l'API publique du projet. Vous pouvez avoir davantage de endpoints si vous souhaitez pouvoir faire du debug. Néanmoins, ceux-ci constituent la base indispensable pour la bonne évaluation de votre projet.
+  version: 1.0.0
+servers:
+  - url: http://yourserver/
+paths:
+  /account:
+    post:
+      tags:
+        - account
+      summary: Créer un nouveau compte
+      description: Créer un nouveau compte
+      operationId: newAccount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                balance:
+                  type: number
+                  format: float
+                  example: 1000
+      responses:
+        '200':
+          description: Réussi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account:
+                    type: integer
+                    format: int64
+                    example: 789123
+                  currency:
+                    type: string
+                    format: string
+                    example: EUR
+                  balance:
+                    type: number
+                    format: float
+                    example: 1034.25        
+        '400':
+          description: Paramètres invalides
+        
+  /account/{account}/balance:
+    get:
+      tags:
+        - account
+      summary: Obtenir le solde du compte
+      description: Obtenir le solde du compte
+      operationId: accountBalance
+      parameters:
+        - name: account
+          in: path
+          description: Identifiant du compte
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Réussi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account:
+                    type: integer
+                    format: int64
+                    example: 789123
+                  currency:
+                    type: string
+                    format: string
+                    example: EUR
+                  balance:
+                    type: number
+                    format: float
+                    example: 1034.25        
+        '400':
+          description: Identifiant invalide
+        '404':
+          description: Compte introuvable
+          
+  /account/{account}/details:
+    get:
+      tags:
+        - account
+      summary: Obtenir les détails du compte
+      description: Obtenir les détails du compte, notamment les 50 dernières transactions
+      operationId: accountDetails
+      parameters:
+        - name: account
+          in: path
+          description: Identifiant du compte
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Réussi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account:
+                    type: integer
+                    format: int64
+                    example: 789123
+                  currency:
+                    type: string
+                    format: string
+                    example: EUR
+                  balance:
+                    type: number
+                    format: float
+                    example: 1034.25
+                  operations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        timestamp:
+                          type: integer
+                          format: int64
+                          example: 1737930176
+                        label:
+                          type: string
+                          format: string
+                          example: "Operation A"
+                        amount:
+                          type: number
+                          format: float
+                          example: 14.51
+
+  /account/{account}/transfer:
+    post:
+      tags:
+        - account
+      summary: Effectuer un virement
+      description: Effectuer un virement
+      operationId: transfer
+      parameters:
+        - name: account
+          in: path
+          description: Identifiant du compte
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  example: 5.50
+                currency:
+                  type: string
+                  format: string
+                  example: "EUR"
+                label:
+                  type: string
+                  format: string
+                  example: "Virement Maman"
+                recipient:
+                  type: number
+                  format: int64
+                  example: "901273"
+      responses:
+        '200':
+          description: Réussi
+        '400':
+          description: Paramètres invalides
+ 
