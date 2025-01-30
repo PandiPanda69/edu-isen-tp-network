@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Checkira Checkira</title>
+</head>
+
+<body>
+  <header>
+    <span>Checkira Bot</span>
+  </header>
+  <div class="container">
+    <p>To launch the testing of the infrastructure, just choose the group and press <em>the button</em>. Automated tests would be ran in order to assess the compliance of the exposed endpoints regarding the <a href="https://github.com/PandiPanda69/edu-isen-tp-network/tree/main/samples">provided Swaggers</a>.</p>
+
+      {% for g in groups %}
+        <form method="POST" action="/check/{{g}}"><input type="submit" value="{{groups[g].name}}"></form>
+      {% endfor %}
+    </form>
+  </div>
+</body>
+
+</html>
