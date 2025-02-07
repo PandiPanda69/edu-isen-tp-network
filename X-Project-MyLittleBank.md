@@ -225,16 +225,55 @@ l'écriture du mini système d'information:
 9. par défaut, la seule devise que vous devez gérer est l'euro (`EUR`).
 10. si vous avez le temps et l'envie, vous pouvez gérer d'autres devises. Dans ce cas, les taux de conversion vous seront transmis au travers de l'API privée.
 
-# Accès à Internet
+# Accès à Internet et réseau _interbancaire_
 <a id="internet"></a>
 
 Certaines de vos VMs vont nécessiter un accès à Internet que ce soit pour installer des
 paquets ou encore parceque ce sont des serveurs frontaux (API publique, serveur de rebond,
 ...).
 
-Lors de votre phase de conception, il vous sera demandé de spécifier le `bridge` qui
-représentera le _réseau Internet_. Faites alors __valider par votre encadrant__ afin
-que celui-ci configure les règles _NAT_ permettant de vous ouvrir les bons flux.
+## Accès à Internet pour installation de vos machines
+
+Afin d'accéder à Internet pour configurer vos machines, le réseau `vmbr901` est à votre
+disposition. Prenez connaissance de la configuration de ce réseau afin d'affecter une IP
+cohérente vous permettant de vous connecter au réseau.
+Faites ensuite __valider par votre encadrant__ votre configuration réseau afin que celui-ci
+configure les règles _NAT_ permettant d'ouvrir les flux.
+
+Dans [l'aide](#Aide) ci-dessous est détaillé la procédure pour installer de nouveaux paquets
+sur votre VM.
+
+## Exposition de vos API publiques sur Internet
+
+Dans le cadre du projet, nous allons exposer vos API publiques sur Internet. Le _bridge_
+`vmbr902` sera dédié à cet usage. Affectez-vous une IP et faites __valider par votre
+enseignant__ afin que celui-ci procède à la configuration _NAT_ et vous explique comment
+accéder à votre API depuis Internet.
+
+## Exposition de la machine de rebond sur Internet
+
+Etant donné la mise en oeuvre d'un réseau de management/administration, nous allons également
+exposer la machine dites _de rebond_ sur Internet afin que vous puissiez procéder au
+déploiement de vos applications sur les différentes machines au travers de _SSH_.
+
+Le _bridge_ `vmbr903` sera dédié à cet usage. Affectez-vous une IP et faites __valider par
+votre enseignant__ la configuration afin que celui-ci procède à la configuration des règles
+_NAT_ et vous explique comment accèder à votre machine depuis Internet.
+
+>[!WARNING]
+>Votre serveur de rebond sera directement accessible depuis Internet. Par conséquent, il est
+__indispensable__ de configurer un mot de passe robuste sur votre serveur. Idéalement,
+privilégiez l'authentification par clef. En effet, une machine avec un mot de passe trivial
+se verra exposé à du _bruteforcing_ et risque d'être compromise en quelques minutes.
+
+## Réseau interbancaire
+
+Le réseau interbancaire, comme son nom l'indique, ne sera pas exposé sur Internet. Il s'agira
+néanmoins d'un réseau à part entière et vous devrez vous connecter sur le _bridge_ `vmbr904`
+afin de pouvoir vous connecter sur ce réseau.
+
+Là encore, faites valider par l'enseignant afin de procéder à la configuration qui permettra
+de réaliser des tests.
 
 # Aide
 
@@ -268,6 +307,88 @@ compromis entre accessibilité et performance même si l'utilisation de base _No
 (`MongoDB`, `Cassandra`, ...) soit tout à fait envisageable.
 
 Il est déconseillé d'utiliser une base de type `sqlite`.
+
+## Comment installer un paquet Debian ?
+
+Rien de plus simple que d'installer un paquet Debian lorsqu'on a accès à Internet, mais
+sans Internet, cela peut vite devenir déroutant et cela nécessite un peu de configuration.
+
+Par défaut, les 3 commandes usuelles sont :
+```
+# Synchronisation avec le serveur des paquets disponibles
+apt update
+# Installer le paquet curl
+apt install curl
+```
+
+Néanmoins, sur vos VMs, vous remarquerez que cela ne fonctionne pas de façon spontanée pour
+plusieurs raisons:
+1. Votre OS a été installé par DVD et les dépôts par défaut sont configurés pour utiliser le DVD.
+2. Il faudra une connexion à Internet.
+3. Il faut configurer la résolution DNS.
+
+### Installation de paquets par DVD
+
+Dans plusieurs cas, le DVD suffit à installer de nombreux paquets. Voici la suite de commande
+à utiliser pour y parvenir. Considérons que nous souhaitons installer l'outil `curl` qui
+permet de faire des requêtes _HTTP_ en ligne de commande.
+
+```
+# Après avoir vérifié que le DVD est bien monté dans le lecteur CD-ROM, il faut indiquer
+# d'utiliser le périphérique sr0 au gestionnaire de paquets
+apt-cdrom add sr0
+# Mise à jour de la liste des paquets
+apt update
+# Installation du paquet curl
+apt install curl
+```
+
+### Installation de paquets par Internet
+
+Dans le cas des VM, il sera nécessaire de faire un peu de configuration pour y parvenir. En
+temps normal, ce n'est pas nécessairement le cas puisque le processus d'installation va se
+charger de configurer automatiquement le gestionnaire de paquets.
+
+La première chose à faire est de vous connecter à un réseau vous donnant accès à Internet.
+
+Nous allons utiliser les dépôts officiels _Debian_ pour l'installation des paquets, à savoir
+`deb.debian.org`. Néanmoins il s'agit d'un nom de domaine et comme vous le savez certainement,
+pour résoudre un nom de domaine, il est nécessaire d'utiliser un serveur DNS et de ce fait, un
+résolveur DNS.
+
+Pour installer le résolveur DNS, utiliser le DVD pour installer le paquet `resolvconf`.
+
+Dans la configuration de l'interface donnant accès à Internet, ajoutez la configuration
+suivante permettant d'indiquer quel résolveur DNS utiliser :
+```
+iface mon_interface inet static
+    address mon_adresse_ip
+    gateway ma_gateway
+    dns-nameserver 213.186.33.99
+```
+
+Nous utiliserons le serveur DNS `213.186.33.99`. Redémarrez le service `networking` puis
+utilisez la commande `host` pour vérifier que la résolution DNS fonctionne. Exemple:
+```
+host example.com
+example.com has address 23.215.0.138
+example.com has address 96.7.128.175
+example.com has address 23.215.0.136
+example.com has address 23.192.228.84
+example.com has address 96.7.128.198
+example.com has address 23.192.228.80
+```
+
+A présent, utilisez la commande `add-apt-repository` pour ajouter le dépôt officiel _Debian_:
+```
+add-apt-repository 'deb https://deb.debian.org/debian bookworm main'
+```
+
+Enfin, lancez les commandes habituelles:
+```
+apt update
+apt install paquet_a_installer
+```
 
 # Tester
 
