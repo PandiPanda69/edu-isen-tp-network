@@ -3,7 +3,9 @@ groups:
     name: Groupe 1
     api_pub: 127.0.0.1:50001
     api_priv: 127.0.0.1:60001
+    admin: 127.0.0.1:40001
   group2:
     name: Groupe 2
     api_pub: 127.0.0.1:50002
     api_priv: 127.0.0.1:60002
+    admin: 127.0.0.1:40002

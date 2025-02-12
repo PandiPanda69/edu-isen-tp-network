@@ -12,6 +12,12 @@
     <p>To launch the testing of the infrastructure, just choose the group and press <em>the button</em>. Automated tests would be ran in order to assess the compliance of the exposed endpoints regarding the <a href="https://github.com/PandiPanda69/edu-isen-tp-network/tree/main/samples">provided Swaggers</a>.</p>
 
       {% for g in groups %}
+        <h3>{{groups[g].name}}</h3>
+        <ul>
+            <li>Management network: {% if checks[g].ssh %} ✅ {% else %} ❌ {% endif %}</li>
+            <li>Public API: {% if checks[g].api_pub %} ✅ {% else %} ❌ {% endif %}</li>
+            <li>Private API: {% if checks[g].api_priv %} ✅ {% else %} ❌ {% endif %}</li>
+        </ul>
         <form method="POST" action="/check/{{g}}"><input type="submit" value="{{groups[g].name}}"></form>
       {% endfor %}
     </form>

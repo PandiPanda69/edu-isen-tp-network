@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 import config
 import check
+import ports
 
 app = Flask(__name__)
 cfg = {}
@@ -8,7 +9,11 @@ cfg = {}
 
 @app.route("/")
 def index():
-    return render_template("index.html", groups=cfg["groups"])
+    network_state = {}
+    for g in cfg["groups"]:
+        network_state[g] = ports.check_project_ports(cfg["groups"][g])
+
+    return render_template("index.html", groups=cfg["groups"], checks=network_state)
 
 
 @app.route("/check/<string:group>", methods = [ "POST" ])
@@ -19,7 +24,7 @@ def check_group(group):
     try:
         check.check_project(cfg=cfg["groups"][group])
     except Exception as ex:
-        return ex, 500
+        return str(ex), 500
  
     return "Pass.", 200
 
