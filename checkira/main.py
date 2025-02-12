@@ -19,7 +19,7 @@ def check_group(group):
     try:
         check.check_project(cfg=cfg["groups"][group])
     except Exception as ex:
-        return ex, 500
+        return str(ex), 500
  
     return "Pass.", 200
 

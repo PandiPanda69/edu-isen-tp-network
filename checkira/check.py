@@ -36,9 +36,9 @@ def check_project(cfg):
                 if op["amount"] == -amount:
                     found_out = True
 
-        if found_in = False:
+        if found_in == False:
             raise Exception("SelfTransfer - No ingress operation.")
-        if found_out = False:
+        if found_out == False:
             raise Exception("SelfTransfer - No egress operation.")
 
     # Check the transfer
@@ -70,7 +70,7 @@ def check_project(cfg):
                 if op["amount"] == -amount:
                     found_out = True
 
-        if found_in = True or found_out = True:
+        if found_in == True or found_out == True:
             pass
         else:
             raise Exception("Transfer - Missing operation.")
@@ -118,7 +118,7 @@ def check_project(cfg):
 
 
 def create_account(api):
-    balance = 50 + random.randInt(0, 50)
+    balance = 50 + random.randint(0, 50)
 
     res = requests.post(api + "/account", json=json.dumps({"balance": balance}))
     if res.status_code != 200:
@@ -183,7 +183,7 @@ def customer_transfer(api, account_id, recipient, amount, currency, label):
         "currency": currency,
         "label": label,
         "recipient": recipient,
-    })
+    }))
     if res.status_code != 200:
         raise Exception("Transfer - Error while creating a new transfer.")
 
@@ -207,7 +207,7 @@ def card_payment(api, source, dest, currency, amount, merchant):
         "currency": currency,
         "amount": amount,
         "merchant": merchant,
-    })
+    }))
     if res.status_code != 200:
         raise Exception("CardPayment - Error while paying.")
 
@@ -219,7 +219,7 @@ def card_payment_denied(api, source, dest, currency, amount, merchant):
         "currency": currency,
         "amount": amount,
         "merchant": merchant,
-    })
+    }))
     if res.status_code != 401:
         raise Exception("CardPaymentDenied - Error while paying.")
 
@@ -231,6 +231,6 @@ def instant_transfer(api, source, dest, currency, amount, label):
         "currency": currency,
         "amount": amount,
         "label": label,
-    })
+    }))
     if res.status_code != 200:
         raise Exception("InstantTransfer - Error while paying.")
