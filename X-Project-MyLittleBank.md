@@ -246,7 +246,7 @@ sur votre VM.
 ## Exposition de vos API publiques sur Internet
 
 Dans le cadre du projet, nous allons exposer vos API publiques sur Internet. Le _bridge_
-`vmbr902` sera dédié à cet usage. Affectez-vous une IP et faites __valider par votre
+`vmbr903` sera dédié à cet usage. Affectez-vous une IP et faites __valider par votre
 enseignant__ afin que celui-ci procède à la configuration _NAT_ et vous explique comment
 accéder à votre API depuis Internet.
 
@@ -256,7 +256,7 @@ Etant donné la mise en oeuvre d'un réseau de management/administration, nous a
 exposer la machine dites _de rebond_ sur Internet afin que vous puissiez procéder au
 déploiement de vos applications sur les différentes machines au travers de _SSH_.
 
-Le _bridge_ `vmbr903` sera dédié à cet usage. Affectez-vous une IP et faites __valider par
+Le _bridge_ `vmbr902` sera dédié à cet usage. Affectez-vous une IP et faites __valider par
 votre enseignant__ la configuration afin que celui-ci procède à la configuration des règles
 _NAT_ et vous explique comment accèder à votre machine depuis Internet.
 
