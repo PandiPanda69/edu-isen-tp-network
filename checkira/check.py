@@ -76,7 +76,7 @@ def check_project(cfg):
             raise Exception("Transfer - Missing operation.")
 
     check_account_operations(api_pub, id1, balance , 3, 4, checker=check_the_transfer)
-    check_account_operations(api_pub, id2, balance2, 1, 2, checker=check_the_transfer) 
+    check_account_operations(api_pub, id2, balance2, 1, 2, checker=check_the_transfer)
 
     # Accounts exist ?
     account_exists(api_priv, id1)
@@ -101,7 +101,7 @@ def check_project(cfg):
     card_payment(api_priv, id2, id1, 'EUR', 175000, "ACHAT VOITURE")
 
     # Check balance
-    check_account_balance(api_pub, id1, balance)    
+    check_account_balance(api_pub, id1, balance)
     check_account_balance(api_pub, id2, balance2)
 
     # InstantTransfer
@@ -122,7 +122,7 @@ def create_account(api):
 
     res = requests.post(api + "/account", json=json.dumps({"balance": balance}))
     if res.status_code != 200:
-        raise Exception("AccountCreation - Error while creating account.")
+        raise Exception("AccountCreation - Error while creating account: received status_code " + str(res.status_code))
 
     data = res.json()
 
@@ -132,14 +132,14 @@ def create_account(api):
         raise Exception("AccountCreation - The balance is incorrect")
     if data["account"] < 100000 and data["account"] > 999999:
         raise Exception("AccountCreation - The account is invalid")
-    
+
     return data["account"], balance
 
 
 def check_account_balance(api, account_id, balance):
     res = requests.post(api + "/account/" + account_id + "/balance")
     if res.status_code != 200:
-        raise Exception("AccountBalance - Error while querying the balance.")
+        raise Exception("AccountBalance - Error while querying the balance: received status_code " + str(res.status_code))
 
     data = res.json()
 
@@ -154,13 +154,13 @@ def check_account_balance(api, account_id, balance):
 def check_unknown_account(api):
     res = requests.post(api + "/account/666/balance")
     if res.status_code != 404:
-        raise Exception("UnknownAccount - Unexpected HTTP code.")
+        raise Exception("UnknownAccount - Unexpected HTTP code: " + str(res.status_code))
 
 
 def check_account_operations(api, account_id, balance, min_len, max_len, checker=None):
     res = requests.post(api + "/account/" + account_id + "/details")
     if res.status_code != 200:
-        raise Exception("AccountDetails - Error while querying the details.")
+        raise Exception("AccountDetails - Error while querying the details: status code: " + str(res.status_code))
 
     data = res.json()
 
@@ -185,19 +185,19 @@ def customer_transfer(api, account_id, recipient, amount, currency, label):
         "recipient": recipient,
     }))
     if res.status_code != 200:
-        raise Exception("Transfer - Error while creating a new transfer.")
+        raise Exception("Transfer - Error while creating a new transfer: status code: " + str(res.status_code))
 
 
 def account_exists(api, account_id):
-    res = requests.get(api + "/account/" + account_id + "/exists")    
+    res = requests.get(api + "/account/" + account_id + "/exists")
     if res.status_code != 200:
-        raise Exception("AccountExists - Error while querying private API.")
+        raise Exception("AccountExists - Error while querying private API: status code: " + str(res.status_code))
 
 
 def account_not_exists(api, account_id):
-    res = requests.get(api + "/account/" + account_id + "/exists")    
+    res = requests.get(api + "/account/" + account_id + "/exists")
     if res.status_code != 404:
-        raise Exception("AccountExists - Error while querying private API.")
+        raise Exception("AccountExists - Error while querying private API: status code: " + str(res.status_code))
 
 
 def card_payment(api, source, dest, currency, amount, merchant):
@@ -221,7 +221,7 @@ def card_payment_denied(api, source, dest, currency, amount, merchant):
         "merchant": merchant,
     }))
     if res.status_code != 401:
-        raise Exception("CardPaymentDenied - Error while paying.")
+        raise Exception("CardPaymentDenied - Error while paying: status code: " + str(res.status_code))
 
 
 def instant_transfer(api, source, dest, currency, amount, label):
@@ -233,4 +233,4 @@ def instant_transfer(api, source, dest, currency, amount, label):
         "label": label,
     }))
     if res.status_code != 200:
-        raise Exception("InstantTransfer - Error while paying.")
+        raise Exception("InstantTransfer - Error while paying: status code: " + str(res.status_code))
