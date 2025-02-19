@@ -1,4 +1,5 @@
 from flask import Flask, render_template
+import traceback
 import config
 import check
 import ports
@@ -24,7 +25,8 @@ def check_group(group):
     try:
         check.check_project(cfg=cfg["groups"][group])
     except Exception as ex:
-        return str(ex), 500
+        traceback.print_exception(ex)
+        return "%s: %s" % (type(ex).__name__, str(ex)), 500
  
     return "Pass.", 200
 
